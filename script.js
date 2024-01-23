@@ -6,9 +6,20 @@ btn.addEventListener('click', function() {
     var ourRequest = new XMLHttpRequest();
     ourRequest.open('GET', 'https://learnwebcode.github.io/json-example/animals-' + pageCounter + '.json')
     ourRequest.onload = function() {
-        ourData = JSON.parse(ourRequest.responseText);
-        renderHTML(ourData);
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+            var ourData = JSON.parse(ourRequest.responseText);
+            renderHTML(ourData);
+        } else {
+            console.log('Connected to the server, but return was an error.')
+        }
+        
     };
+
+    ourRequest.onerror = function(){
+        console.log('Connection not working, error');
+
+    }
+
     ourRequest.send();
     pageCounter++;
     if (pageCounter > 3) {
@@ -30,7 +41,17 @@ function renderHTML(data){
              }
         }
 
-        htmlString += '</p>'
+        htmlString += ' and dislikes ';
+
+        for (ii = 0; ii < data[i].foods.dislikes.length; ii++){
+            if (ii == 0) {
+               htmlString += data[i].foods.dislikes[ii];
+            } else {
+               htmlString += ' and ' + data[i].foods.dislikes[ii];
+            }
+       }
+
+        htmlString += '</p>';
 
     }
 
